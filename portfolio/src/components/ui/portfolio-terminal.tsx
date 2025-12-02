@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Github, Linkedin, Mail, Terminal as TerminalIcon } from 'lucide-react'
+import { Github, Linkedin, Mail, Terminal as TerminalIcon, Heart } from 'lucide-react'
 import MatrixBackground from './matrix-background'
 import AboutSection from './about-section'
 import ContactSection from './contact-section'
@@ -21,7 +21,6 @@ const INITIAL_HISTORY: CommandEntry[] = [
     output: (
       <div className="text-4xl md:text-6xl font-bold text-blue-400 my-4 drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">
         Saajan P Varghese
-        {/* Cursor removed here */}
       </div>
     ) 
   },
@@ -273,6 +272,15 @@ export default function PortfolioTerminal() {
           </h2>
           <ContactSection />
         </section>
+
+        {/* --- FOOTER --- */}
+        <footer className="text-center py-8 text-blue-500/40 text-xs md:text-sm font-mono border-t border-blue-900/30">
+          <p className="flex items-center justify-center gap-2">
+            &copy; 2025 <span className="text-blue-800">|</span> Made with
+            <Heart size={14} className="fill-blue-500/50 text-blue-500 animate-pulse" />
+            by Saajan
+          </p>
+        </footer>
 
       </main>
     </div>
