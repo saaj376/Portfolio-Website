@@ -40,7 +40,7 @@ export default function ExperienceSection() {
             {/* Content */}
             <div className="p-6">
               <p className="text-gray-300 leading-relaxed mb-6">
-                I am currently looking for roles as a <span className="text-blue-400 font-bold">Full Stack Developer</span> or <span className="text-blue-400 font-bold">Software Engineer</span>. 
+                I am currently looking for roles as a <span className="text-blue-400 font-bold">Software Engineering Intern</span> or <span className="text-blue-400 font-bold">AI Engineering Intern</span>. 
                 I bring a strong foundation in modern web technologies and a passion for building scalable, user-centric applications.
               </p>
               
