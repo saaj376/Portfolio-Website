@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Github, ExternalLink, Terminal, Cpu, Code, ChevronRight, ChevronLeft, FolderGit2 } from 'lucide-react'
 
 // --- Project Data Interface ---
