@@ -1,10 +1,11 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Github, Linkedin, Mail, Server, Layout } from 'lucide-react'
+import { Github, Linkedin, Mail } from 'lucide-react'
 import MatrixBackground from './matrix-background'
 import AboutSection from './about-section'
 import ContactSection from './contact-section'
+import ProjectsSection from './project-section' // <--- IMPORT THIS
 
 // --- Types ---
 interface CommandEntry {
@@ -18,9 +19,9 @@ const INITIAL_HISTORY: CommandEntry[] = [
     command: 'whoami', 
     output: <div className="text-4xl md:text-6xl font-bold text-blue-400 my-4 drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">John_Doe</div> 
   },
-  { 
-    command: 'cat role.txt', 
-    output: <div className="text-xl md:text-2xl text-blue-300 font-semibold mb-4">{'>> Full Stack Developer'}</div> 
+  {
+    command: 'cat role.txt',
+    output: <div className="text-xl md:text-2xl text-blue-300 font-semibold mb-4">{'>> A Budding SWE'}</div>
   },
   { 
     command: 'cat description.txt', 
@@ -118,7 +119,7 @@ export default function PortfolioTerminal() {
         break;
       
       case 'projects':
-        output = <span className="text-blue-300">{'>> Loading project_directory...'}</span>;
+        output = <span className="text-blue-300">{'>> Accessing project_directory...'}</span>;
         setTimeout(() => scrollToSection('projects'), 500);
         break;
 
@@ -269,49 +270,12 @@ export default function PortfolioTerminal() {
         </section>
 
         {/* --- PROJECTS SECTION --- */}
-        <section id="projects" className="min-h-[50vh] flex flex-col justify-center py-20 border-t border-blue-900/30">
-          <h2 className="text-4xl font-bold text-blue-500 mb-12 font-mono">./projects</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-             
-             {/* Project 1 */}
-             <div className="border border-blue-500/30 bg-black/40 rounded-lg overflow-hidden hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all group">
-                <div className="h-48 bg-blue-900/20 flex items-center justify-center border-b border-blue-500/20 relative overflow-hidden">
-                   <Layout size={48} className="text-blue-500/50 group-hover:scale-110 transition-transform duration-500" />
-                   <div className="absolute inset-0 bg-blue-500/5 mix-blend-overlay"></div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-blue-300 mb-2">Secure Cloud Storage</h3>
-                  <p className="text-gray-400 text-sm mb-4">
-                    A decentralized file storage system using IPFS and AES-256 encryption. Features drag-and-drop upload and sharable links.
-                  </p>
-                  <div className="flex gap-2 mb-4">
-                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">React</span>
-                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">Node.js</span>
-                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">IPFS</span>
-                  </div>
-                </div>
-             </div>
-
-             {/* Project 2 */}
-             <div className="border border-blue-500/30 bg-black/40 rounded-lg overflow-hidden hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all group">
-                <div className="h-48 bg-blue-900/20 flex items-center justify-center border-b border-blue-500/20 relative overflow-hidden">
-                   <Server size={48} className="text-blue-500/50 group-hover:scale-110 transition-transform duration-500" />
-                   <div className="absolute inset-0 bg-blue-500/5 mix-blend-overlay"></div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-blue-300 mb-2">DevTeam Collab</h3>
-                  <p className="text-gray-400 text-sm mb-4">
-                    Real-time project management dashboard for remote teams. Includes kanban boards, live chat, and git integration.
-                  </p>
-                  <div className="flex gap-2 mb-4">
-                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">Next.js</span>
-                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">Socket.io</span>
-                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">Prisma</span>
-                  </div>
-                </div>
-             </div>
-
-          </div>
+        <section id="projects" className="min-h-screen flex flex-col justify-center py-20 border-t border-blue-900/30">
+          <h2 className="text-4xl font-bold text-blue-500 mb-12 font-mono border-b border-blue-900/30 pb-4 inline-block w-full">
+            ./projects
+          </h2>
+          {/* Replaced hardcoded cards with the new component */}
+          <ProjectsSection />
         </section>
 
         {/* --- CONTACT SECTION --- */}
