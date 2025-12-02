@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Github, Linkedin, Mail } from 'lucide-react'
+import { Github, Linkedin, Mail, Terminal as TerminalIcon } from 'lucide-react'
 import MatrixBackground from './matrix-background'
 import AboutSection from './about-section'
 import ContactSection from './contact-section'
-import ProjectsSection from './project-section' // <--- IMPORT THIS
+import ProjectsSection from './project-section'
+import ExperienceSection from './experience-section'
 
 // --- Types ---
 interface CommandEntry {
@@ -17,11 +18,16 @@ interface CommandEntry {
 const INITIAL_HISTORY: CommandEntry[] = [
   { 
     command: 'whoami', 
-    output: <div className="text-4xl md:text-6xl font-bold text-blue-400 my-4 drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">John_Doe</div> 
+    output: (
+      <div className="text-4xl md:text-6xl font-bold text-blue-400 my-4 drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">
+        Saajan P Varghese
+        {/* Cursor removed here */}
+      </div>
+    ) 
   },
   {
     command: 'cat role.txt',
-    output: <div className="text-xl md:text-2xl text-blue-300 font-semibold mb-4">{'>> A Budding SWE'}</div>
+    output: <div className="text-xl md:text-2xl text-blue-300 font-semibold mb-4">{'>> A budding SWE'}</div>
   },
   { 
     command: 'cat description.txt', 
@@ -54,19 +60,32 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 font-mono text-sm bg-black/80 backdrop-blur-sm border-b border-blue-900/30">
-      <div className="flex items-center gap-2 text-blue-500 font-bold text-lg">
-        <span className="text-blue-400">{'>_'}</span> ./portfolio
-      </div>
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 font-mono text-sm bg-black/80 backdrop-blur-md border-b border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all duration-300">
+      
+      {/* Clickable Logo */}
+      <a 
+        href="#home" 
+        onClick={(e) => handleNavClick(e, '#home')}
+        className="flex items-center gap-2 text-blue-400 font-bold text-lg drop-shadow-[0_0_5px_rgba(59,130,246,0.8)] hover:text-blue-300 transition-colors cursor-pointer group"
+      >
+        <TerminalIcon size={18} className="text-blue-500 group-hover:scale-110 transition-transform" />
+        <span className="tracking-wider">./portfolio</span>
+      </a>
+
       <div className="hidden md:flex gap-8">
         {navLinks.map((link) => (
           <a 
             key={link.name} 
             href={link.href}
             onClick={(e) => handleNavClick(e, link.href)}
-            className="text-gray-500 hover:text-blue-400 transition-colors uppercase tracking-widest text-xs hover:shadow-[0_0_10px_rgba(96,165,250,0.5)]"
+            className="text-blue-300/70 hover:text-blue-400 transition-all uppercase tracking-widest text-xs group relative py-1"
           >
-            [{link.name}]
+            <span className="group-hover:text-blue-200 transition-colors duration-300 group-hover:drop-shadow-[0_0_5px_rgba(59,130,246,0.8)]">
+              <span className="text-blue-500/50 group-hover:text-blue-400">[</span>
+              {link.name}
+              <span className="text-blue-500/50 group-hover:text-blue-400">]</span>
+            </span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300 shadow-[0_0_5px_rgba(59,130,246,0.8)]"></span>
           </a>
         ))}
       </div>
@@ -74,14 +93,12 @@ const Navbar = () => {
   )
 }
 
-// --- Main Page Component ---
 export default function PortfolioTerminal() {
   const [history, setHistory] = useState<CommandEntry[]>(INITIAL_HISTORY)
   const [currentCommand, setCurrentCommand] = useState('')
   const scrollableRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // -- Helper to scroll the MAIN WINDOW to external sections --
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -89,7 +106,6 @@ export default function PortfolioTerminal() {
     }
   };
 
-  // -- Commands Logic --
   const executeCommand = (cmd: string) => {
     const cleanCmd = cmd.trim().toLowerCase()
     let output: React.ReactNode = ''
@@ -107,14 +123,13 @@ export default function PortfolioTerminal() {
         )
         break
       
-      // --- NAVIGATION COMMANDS (Scroll to sections) ---
       case 'about':
         output = <span className="text-blue-300">{'>> Executing about_me.md...'}</span>;
         setTimeout(() => scrollToSection('about'), 500);
         break;
       
       case 'experience':
-        output = <span className="text-blue-300">{'>> Fetching work_history.log...'}</span>;
+        output = <span className="text-blue-300">{'>> Accessing career_log.txt...'}</span>;
         setTimeout(() => scrollToSection('experience'), 500);
         break;
       
@@ -146,7 +161,6 @@ export default function PortfolioTerminal() {
     }
   }
 
-  // --- INTERNAL SCROLL LOGIC ---
   useEffect(() => {
     if (scrollableRef.current) {
       scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
@@ -156,7 +170,7 @@ export default function PortfolioTerminal() {
   const handleTerminalClick = () => inputRef.current?.focus()
 
   return (
-    <div className="min-h-screen relative font-mono selection:bg-blue-900 selection:text-white pb-20">
+    <div className="min-h-screen relative font-mono selection:bg-blue-900 selection:text-white pb-20 overflow-x-hidden w-full">
       
       <MatrixBackground />
       <div className="fixed inset-0 bg-black/80 -z-10"></div>
@@ -171,17 +185,15 @@ export default function PortfolioTerminal() {
             className="relative w-full max-w-5xl bg-black/90 rounded-lg border border-blue-500/30 shadow-[0_0_50px_rgba(59,130,246,0.15)] overflow-hidden flex flex-col"
             onClick={handleTerminalClick}
           >
-            {/* Window Header */}
             <div className="bg-gray-900/50 px-4 py-2 flex items-center gap-2 border-b border-blue-500/20 shrink-0">
               <div className="flex gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-500/80" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                <div className="w-3 h-3 rounded-full bg-blue-500/80" />
+                <div className="w-3 h-3 rounded-full bg-green-500/80" />
               </div>
               <div className="ml-4 text-xs text-blue-700 font-semibold tracking-wider">portfolio.sh</div>
             </div>
 
-            {/* Terminal Content Area */}
             <div 
               ref={scrollableRef}
               className="p-6 md:p-10 h-[60vh] overflow-y-auto" 
@@ -214,7 +226,6 @@ export default function PortfolioTerminal() {
               </div>
             </div>
 
-            {/* Bottom Action Bar */}
             <div className="p-4 border-t border-blue-900/30 flex items-center gap-4 shrink-0 bg-black/50">
                <button 
                   onClick={() => executeCommand('contact')}
@@ -240,33 +251,11 @@ export default function PortfolioTerminal() {
         </section>
 
         {/* --- EXPERIENCE SECTION --- */}
-        <section id="experience" className="min-h-[50vh] flex flex-col justify-center py-20 border-t border-blue-900/30">
-          <h2 className="text-4xl font-bold text-blue-500 mb-12 font-mono">./experience</h2>
-          <div className="space-y-6">
-            
-            {/* Experience Item 1 */}
-            <div className="p-6 border-l-2 border-blue-500 bg-blue-900/5 hover:bg-blue-900/10 transition-all group">
-               <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
-                 <h3 className="text-2xl text-white font-semibold group-hover:text-blue-300 transition-colors">Senior Developer @ TechCorp</h3>
-                 <span className="text-blue-400 font-mono text-sm bg-blue-900/20 px-2 py-1 rounded">2023 - Present</span>
-               </div>
-               <p className="text-gray-400 leading-relaxed max-w-3xl">
-                 Spearheaded the migration of legacy systems to modern React architectures, improving load times by 40%. Led a team of 5 developers in building scalable microservices.
-               </p>
-            </div>
-
-            {/* Experience Item 2 */}
-            <div className="p-6 border-l-2 border-blue-900/50 hover:border-blue-500 bg-blue-900/5 hover:bg-blue-900/10 transition-all group">
-               <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
-                 <h3 className="text-xl text-gray-300 font-semibold group-hover:text-blue-300 transition-colors">Full Stack Developer @ StartupX</h3>
-                 <span className="text-gray-500 font-mono text-sm group-hover:text-blue-400">2021 - 2023</span>
-               </div>
-               <p className="text-gray-400 leading-relaxed max-w-3xl">
-                 Developed and deployed 3 major SaaS products using Next.js and Supabase. Implemented real-time collaboration features using WebSockets.
-               </p>
-            </div>
-
-          </div>
+        <section id="experience" className="min-h-screen flex flex-col justify-center py-20 border-t border-blue-900/30">
+          <h2 className="text-4xl font-bold text-blue-500 mb-8 border-b border-blue-900/30 pb-4 inline-block w-full font-mono">
+            ./experience
+          </h2>
+          <ExperienceSection />
         </section>
 
         {/* --- PROJECTS SECTION --- */}
@@ -274,7 +263,6 @@ export default function PortfolioTerminal() {
           <h2 className="text-4xl font-bold text-blue-500 mb-12 font-mono border-b border-blue-900/30 pb-4 inline-block w-full">
             ./projects
           </h2>
-          {/* Replaced hardcoded cards with the new component */}
           <ProjectsSection />
         </section>
 

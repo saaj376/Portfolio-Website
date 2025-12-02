@@ -7,8 +7,8 @@ import { Code, Globe, Database, Cpu } from 'lucide-react'
 const skills = {
   languages: ['Python', 'C', 'C++', 'Java', 'JavaScript', 'TypeScript', 'SQL'],
   frontend: ['React', 'Next.js', 'Tailwind CSS', 'HTML5', 'CSS3'],
-  backend: ['Node.js', 'Express', 'Flask', 'Django', 'PostgreSQL', 'MongoDB', 'Supabase'],
-  tools: ['Git', 'Docker', 'AWS', 'Linux', 'VS Code', 'Figma', 'LangChain', 'TensorFlow', 'Pandas', 'NumPy']
+  backend: ['Flask', 'Django', 'PostgreSQL', 'MongoDB', 'Supabase'],
+  tools: ['Git', 'Github', 'Linux', 'VS Code','LangChain', 'TensorFlow', 'Pandas', 'NumPy']
 };
 
 // --- Skill Badge Component ---
@@ -52,7 +52,7 @@ export default function AboutSection() {
                 I'm a passionate Computer Science student and developer who loves turning complex problems into simple, beautiful solutions.
               </p>
               <p>
-                My journey in tech started with curiosity about how things work under the hood. Now I spend my time building full-stack applications, exploring new technologies, and contributing to open source.
+                My journey in tech started with curiosity about how things work under the hood. Now I spend my time building applications that has an impact, exploring new technologies, and contributing to open source.
               </p>
               <p>
                 When I'm not coding, you'll find me exploring cybersecurity concepts, reading tech blogs, or debugging my life choices.
