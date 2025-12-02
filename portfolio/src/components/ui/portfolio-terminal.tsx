@@ -1,8 +1,10 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Github, Linkedin, Mail } from 'lucide-react'
+import { Github, Linkedin, Mail, Server, Layout } from 'lucide-react'
 import MatrixBackground from './matrix-background'
+import AboutSection from './about-section'
+import ContactSection from './contact-section'
 
 // --- Types ---
 interface CommandEntry {
@@ -10,15 +12,45 @@ interface CommandEntry {
   output: React.ReactNode
 }
 
+// --- CONSTANT: The Initial "Welcome" State ---
+const INITIAL_HISTORY: CommandEntry[] = [
+  { 
+    command: 'whoami', 
+    output: <div className="text-4xl md:text-6xl font-bold text-blue-400 my-4 drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">John_Doe</div> 
+  },
+  { 
+    command: 'cat role.txt', 
+    output: <div className="text-xl md:text-2xl text-blue-300 font-semibold mb-4">{'>> Full Stack Developer'}</div> 
+  },
+  { 
+    command: 'cat description.txt', 
+    output: (
+      <div className="max-w-2xl text-gray-400 leading-relaxed mb-6 border-l-2 border-blue-800 pl-4">
+        I write code that transforms caffeine into features. <br/>
+        Specializing in web development, system design, <br/>
+        and turning 0s and 1s into meaningful experiences.
+      </div>
+    )
+  },
+]
+
 // --- Navbar Component ---
 const Navbar = () => {
   const navLinks = [
-    { name: 'home', href: '#' },
+    { name: 'home', href: '#home' },
     { name: 'about', href: '#about' },
     { name: 'experience', href: '#experience' },
     { name: 'projects', href: '#projects' },
     { name: 'contact', href: '#contact' },
   ]
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const element = document.querySelector(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 font-mono text-sm bg-black/80 backdrop-blur-sm border-b border-blue-900/30">
@@ -30,6 +62,7 @@ const Navbar = () => {
           <a 
             key={link.name} 
             href={link.href}
+            onClick={(e) => handleNavClick(e, link.href)}
             className="text-gray-500 hover:text-blue-400 transition-colors uppercase tracking-widest text-xs hover:shadow-[0_0_10px_rgba(96,165,250,0.5)]"
           >
             [{link.name}]
@@ -40,32 +73,20 @@ const Navbar = () => {
   )
 }
 
-// --- Main Terminal Component ---
+// --- Main Page Component ---
 export default function PortfolioTerminal() {
-  const [history, setHistory] = useState<CommandEntry[]>([
-    { 
-      command: 'whoami', 
-      output: <div className="text-4xl md:text-6xl font-bold text-blue-400 my-4 drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]">John_Doe</div> 
-    },
-    { 
-      command: 'cat role.txt', 
-      output: <div className="text-xl md:text-2xl text-blue-300 font-semibold mb-4">{">>"} Full Stack Developer</div> 
-    },
-    { 
-      command: 'cat description.txt', 
-      output: (
-        <div className="max-w-2xl text-gray-400 leading-relaxed mb-6 border-l-2 border-blue-800 pl-4">
-          I write code that transforms caffeine into features. <br/>
-          Specializing in web development, system design, <br/>
-          and turning 0s and 1s into meaningful experiences.
-        </div>
-      )
-    },
-  ])
-  
+  const [history, setHistory] = useState<CommandEntry[]>(INITIAL_HISTORY)
   const [currentCommand, setCurrentCommand] = useState('')
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const scrollableRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // -- Helper to scroll the MAIN WINDOW to external sections --
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // -- Commands Logic --
   const executeCommand = (cmd: string) => {
@@ -76,52 +97,40 @@ export default function PortfolioTerminal() {
       case 'help':
         output = (
           <div className="grid grid-cols-2 gap-4 max-w-sm text-gray-300">
-            <span className="text-blue-400">about</span> <span>Who am I?</span>
-            <span className="text-blue-400">experience</span> <span>My career</span>
-            <span className="text-blue-400">projects</span> <span>My work</span>
-            <span className="text-blue-400">contact</span> <span>Email me</span>
+            <span className="text-blue-400">about</span> <span>View Bio & Skills</span>
+            <span className="text-blue-400">experience</span> <span>View Experience</span>
+            <span className="text-blue-400">projects</span> <span>View Projects</span>
+            <span className="text-blue-400">contact</span> <span>Open Contact Channel</span>
+            <span className="text-blue-400">clear</span> <span>Reset Terminal</span>
           </div>
         )
         break
+      
+      // --- NAVIGATION COMMANDS (Scroll to sections) ---
       case 'about':
-        output = "Name: John Doe | Status: Online | Location: Cyberspace"
-        break
+        output = <span className="text-blue-300">{'>> Executing about_me.md...'}</span>;
+        setTimeout(() => scrollToSection('about'), 500);
+        break;
+      
       case 'experience':
-        output = (
-          <div className="space-y-4 text-gray-300">
-             <div>
-                <div className="text-blue-400 font-bold">2023 - Present | Senior Developer @ TechCorp</div>
-                <div className="text-sm opacity-80 pl-4 border-l border-blue-900 ml-1">
-                  Led migration to React 18, improved performance by 40%.
-                </div>
-             </div>
-             <div>
-                <div className="text-blue-400 font-bold">2020 - 2023 | Full Stack Dev @ Startup Inc</div>
-                <div className="text-sm opacity-80 pl-4 border-l border-blue-900 ml-1">
-                  Built MVP from scratch using Next.js and Node.js.
-                </div>
-             </div>
-          </div>
-        )
-        break
+        output = <span className="text-blue-300">{'>> Fetching work_history.log...'}</span>;
+        setTimeout(() => scrollToSection('experience'), 500);
+        break;
+      
       case 'projects':
-        output = (
-          <div className="space-y-2 text-gray-300">
-            <div><span className="text-blue-400 font-bold">Portfolio</span> • React, Tailwind, Vite</div>
-            <div><span className="text-blue-400 font-bold">E-Commerce</span> • Next.js, Stripe, Prisma</div>
-            <div><span className="text-blue-400 font-bold">Chat App</span> • Socket.io, Express, React</div>
-          </div>
-        )
-        break
+        output = <span className="text-blue-300">{'>> Loading project_directory...'}</span>;
+        setTimeout(() => scrollToSection('projects'), 500);
+        break;
+
       case 'contact':
-        output = (
-          <div className="flex gap-4 mt-2">
-            <a href="#" className="flex items-center gap-2 hover:text-blue-300"><Github size={16}/> GitHub</a>
-            <a href="#" className="flex items-center gap-2 hover:text-blue-300"><Linkedin size={16}/> LinkedIn</a>
-            <a href="#" className="flex items-center gap-2 hover:text-blue-300"><Mail size={16}/> Email</a>
-          </div>
-        )
-        break
+        output = <span className="text-blue-300">{'>> Opening secure communication channel...'}</span>;
+        setTimeout(() => scrollToSection('contact'), 500);
+        break;
+        
+      case 'clear':
+        setHistory(INITIAL_HISTORY);
+        return; 
+
       default:
         output = <span className="text-red-400">Command not found: {cmd}. Type 'help'.</span>
     }
@@ -136,83 +145,183 @@ export default function PortfolioTerminal() {
     }
   }
 
-  // Auto-scroll to bottom
+  // --- INTERNAL SCROLL LOGIC ---
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (scrollableRef.current) {
+      scrollableRef.current.scrollTop = scrollableRef.current.scrollHeight;
+    }
   }, [history])
 
-  // Focus input on click
-  const focusInput = () => inputRef.current?.focus()
+  const handleTerminalClick = () => inputRef.current?.focus()
 
   return (
-    <div className="min-h-screen relative font-mono selection:bg-blue-900 selection:text-white" onClick={focusInput}>
+    <div className="min-h-screen relative font-mono selection:bg-blue-900 selection:text-white pb-20">
       
       <MatrixBackground />
-      <div className="absolute inset-0 bg-black/70 -z-10"></div>
+      <div className="fixed inset-0 bg-black/80 -z-10"></div>
 
       <Navbar />
 
-      <main className="pt-24 pb-10 px-4 md:px-10 container mx-auto">
-        <div className="relative w-full max-w-5xl mx-auto bg-black/90 rounded-lg border border-blue-500/30 shadow-[0_0_50px_rgba(59,130,246,0.15)] overflow-hidden">
-          
-          {/* Window Header */}
-          <div className="bg-gray-900/50 px-4 py-2 flex items-center gap-2 border-b border-blue-500/20">
-            <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500/80" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-              <div className="w-3 h-3 rounded-full bg-blue-500/80" />
-            </div>
-            <div className="ml-4 text-xs text-blue-700 font-semibold tracking-wider">portfolio.sh</div>
-          </div>
-
-          {/* Terminal Content */}
-          <div className="p-6 md:p-10 min-h-[60vh] overflow-y-auto">
-            
-            {history.map((entry, i) => (
-              <div key={i} className="mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <div className="flex items-center gap-2 text-sm md:text-base opacity-70 mb-1">
-                  <span className="text-blue-600">$</span>
-                  <span className="text-gray-300">{entry.command}</span>
-                </div>
-                <div className="ml-4 md:ml-6 text-blue-500">
-                  {entry.output}
-                </div>
+      <main className="container mx-auto px-4 md:px-10">
+        
+        {/* --- HERO SECTION (TERMINAL) --- */}
+        <section id="home" className="min-h-screen flex items-center justify-center pt-20">
+          <div 
+            className="relative w-full max-w-5xl bg-black/90 rounded-lg border border-blue-500/30 shadow-[0_0_50px_rgba(59,130,246,0.15)] overflow-hidden flex flex-col"
+            onClick={handleTerminalClick}
+          >
+            {/* Window Header */}
+            <div className="bg-gray-900/50 px-4 py-2 flex items-center gap-2 border-b border-blue-500/20 shrink-0">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                <div className="w-3 h-3 rounded-full bg-blue-500/80" />
               </div>
-            ))}
-
-            <div className="flex items-center gap-3 mt-4">
-               <span className="text-blue-500 animate-pulse">{'>'}</span>
-               <input 
-                 ref={inputRef}
-                 type="text" 
-                 value={currentCommand}
-                 onChange={(e) => setCurrentCommand(e.target.value)}
-                 onKeyDown={handleKeyDown}
-                 className="bg-transparent outline-none text-blue-400 w-full placeholder-blue-800/50"
-                 placeholder="Type 'help'..."
-                 autoFocus
-               />
+              <div className="ml-4 text-xs text-blue-700 font-semibold tracking-wider">portfolio.sh</div>
             </div>
+
+            {/* Terminal Content Area */}
+            <div 
+              ref={scrollableRef}
+              className="p-6 md:p-10 h-[60vh] overflow-y-auto" 
+              style={{ scrollbarWidth: 'thin' }}
+            >
+              {history.map((entry, i) => (
+                <div key={i} className="mb-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  <div className="flex items-center gap-2 text-sm md:text-base opacity-70 mb-1">
+                    <span className="text-blue-600">$</span>
+                    <span className="text-gray-300">{entry.command}</span>
+                  </div>
+                  <div className="ml-4 md:ml-6 text-blue-500 w-full">
+                    {entry.output}
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex items-center gap-3 mt-4">
+                 <span className="text-blue-500 animate-pulse">{'>'}</span>
+                 <input 
+                   ref={inputRef}
+                   type="text" 
+                   value={currentCommand}
+                   onChange={(e) => setCurrentCommand(e.target.value)}
+                   onKeyDown={handleKeyDown}
+                   className="bg-transparent outline-none text-blue-400 w-full placeholder-blue-800/50"
+                   placeholder="Type 'help'..."
+                   autoFocus
+                 />
+              </div>
+            </div>
+
+            {/* Bottom Action Bar */}
+            <div className="p-4 border-t border-blue-900/30 flex items-center gap-4 shrink-0 bg-black/50">
+               <button 
+                  onClick={() => executeCommand('contact')}
+                  className="px-4 py-1.5 border border-blue-500 text-blue-500 text-sm hover:bg-blue-500 hover:text-black transition-all flex items-center gap-2"
+               >
+                 ./contact --init
+               </button>
+               <div className="flex gap-4 text-blue-700">
+                 <a href="https://github.com/saaj376" target="_blank" className="hover:text-blue-400 transition-colors"><Github size={18}/></a>
+                 <a href="https://www.linkedin.com/in/saajanvarghese376/" target="_blank" className="hover:text-blue-400 transition-colors"><Linkedin size={18}/></a>
+                 <a href="mailto:saajan.varghese.2006@gmail.com" className="hover:text-blue-400 transition-colors"><Mail size={18}/></a>
+               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* --- ABOUT SECTION --- */}
+        <section id="about" className="min-h-screen flex flex-col justify-center py-20">
+           <h2 className="text-4xl font-bold text-blue-500 mb-8 border-b border-blue-900/30 pb-4 inline-block w-full font-mono">
+             ./about
+           </h2>
+           <AboutSection />
+        </section>
+
+        {/* --- EXPERIENCE SECTION --- */}
+        <section id="experience" className="min-h-[50vh] flex flex-col justify-center py-20 border-t border-blue-900/30">
+          <h2 className="text-4xl font-bold text-blue-500 mb-12 font-mono">./experience</h2>
+          <div className="space-y-6">
             
-            <div ref={bottomRef} />
-          </div>
+            {/* Experience Item 1 */}
+            <div className="p-6 border-l-2 border-blue-500 bg-blue-900/5 hover:bg-blue-900/10 transition-all group">
+               <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
+                 <h3 className="text-2xl text-white font-semibold group-hover:text-blue-300 transition-colors">Senior Developer @ TechCorp</h3>
+                 <span className="text-blue-400 font-mono text-sm bg-blue-900/20 px-2 py-1 rounded">2023 - Present</span>
+               </div>
+               <p className="text-gray-400 leading-relaxed max-w-3xl">
+                 Spearheaded the migration of legacy systems to modern React architectures, improving load times by 40%. Led a team of 5 developers in building scalable microservices.
+               </p>
+            </div>
 
-          {/* Bottom Action Bar */}
-          <div className="p-4 border-t border-blue-900/30 flex items-center gap-4">
-             <button 
-                onClick={() => executeCommand('contact')}
-                className="px-4 py-1.5 border border-blue-500 text-blue-500 text-sm hover:bg-blue-500 hover:text-black transition-all flex items-center gap-2"
-             >
-               ./contact --init
-             </button>
-             <div className="flex gap-4 text-blue-700">
-               <Github size={18} className="hover:text-blue-400 cursor-pointer transition-colors"/>
-               <Linkedin size={18} className="hover:text-blue-400 cursor-pointer transition-colors"/>
-               <Mail size={18} className="hover:text-blue-400 cursor-pointer transition-colors"/>
+            {/* Experience Item 2 */}
+            <div className="p-6 border-l-2 border-blue-900/50 hover:border-blue-500 bg-blue-900/5 hover:bg-blue-900/10 transition-all group">
+               <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
+                 <h3 className="text-xl text-gray-300 font-semibold group-hover:text-blue-300 transition-colors">Full Stack Developer @ StartupX</h3>
+                 <span className="text-gray-500 font-mono text-sm group-hover:text-blue-400">2021 - 2023</span>
+               </div>
+               <p className="text-gray-400 leading-relaxed max-w-3xl">
+                 Developed and deployed 3 major SaaS products using Next.js and Supabase. Implemented real-time collaboration features using WebSockets.
+               </p>
+            </div>
+
+          </div>
+        </section>
+
+        {/* --- PROJECTS SECTION --- */}
+        <section id="projects" className="min-h-[50vh] flex flex-col justify-center py-20 border-t border-blue-900/30">
+          <h2 className="text-4xl font-bold text-blue-500 mb-12 font-mono">./projects</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+             
+             {/* Project 1 */}
+             <div className="border border-blue-500/30 bg-black/40 rounded-lg overflow-hidden hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all group">
+                <div className="h-48 bg-blue-900/20 flex items-center justify-center border-b border-blue-500/20 relative overflow-hidden">
+                   <Layout size={48} className="text-blue-500/50 group-hover:scale-110 transition-transform duration-500" />
+                   <div className="absolute inset-0 bg-blue-500/5 mix-blend-overlay"></div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-blue-300 mb-2">Secure Cloud Storage</h3>
+                  <p className="text-gray-400 text-sm mb-4">
+                    A decentralized file storage system using IPFS and AES-256 encryption. Features drag-and-drop upload and sharable links.
+                  </p>
+                  <div className="flex gap-2 mb-4">
+                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">React</span>
+                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">Node.js</span>
+                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">IPFS</span>
+                  </div>
+                </div>
              </div>
-          </div>
 
-        </div>
+             {/* Project 2 */}
+             <div className="border border-blue-500/30 bg-black/40 rounded-lg overflow-hidden hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all group">
+                <div className="h-48 bg-blue-900/20 flex items-center justify-center border-b border-blue-500/20 relative overflow-hidden">
+                   <Server size={48} className="text-blue-500/50 group-hover:scale-110 transition-transform duration-500" />
+                   <div className="absolute inset-0 bg-blue-500/5 mix-blend-overlay"></div>
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-bold text-blue-300 mb-2">DevTeam Collab</h3>
+                  <p className="text-gray-400 text-sm mb-4">
+                    Real-time project management dashboard for remote teams. Includes kanban boards, live chat, and git integration.
+                  </p>
+                  <div className="flex gap-2 mb-4">
+                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">Next.js</span>
+                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">Socket.io</span>
+                    <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-300 rounded border border-blue-500/20">Prisma</span>
+                  </div>
+                </div>
+             </div>
+
+          </div>
+        </section>
+
+        {/* --- CONTACT SECTION --- */}
+        <section id="contact" className="min-h-screen flex flex-col justify-center py-20 border-t border-blue-900/30">
+          <h2 className="text-4xl font-bold text-blue-500 mb-8 border-b border-blue-900/30 pb-4 inline-block w-full font-mono">
+            ./contact
+          </h2>
+          <ContactSection />
+        </section>
+
       </main>
     </div>
   )
