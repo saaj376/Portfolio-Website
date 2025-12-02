@@ -33,7 +33,7 @@ const INITIAL_HISTORY: CommandEntry[] = [
     output: (
       <div className="max-w-2xl text-gray-400 leading-relaxed mb-6 border-l-2 border-blue-800 pl-4">
         I write code that transforms caffeine into features. <br/>
-        Specializing in web development, system design, <br/>
+        Learning,unlearning,breaking, unbreakable new things <br/>
         and turning 0s and 1s into meaningful experiences.
       </div>
     )
